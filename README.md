@@ -1,8 +1,3 @@
-```sql
-
-
-```
-
 ---
 
 # Oracle APEX + UltraMsg WhatsApp API Integration
@@ -163,14 +158,3 @@ END;
 * Store credentials in database tables or vault for production use
 * Validate phone numbers and message content before sending
 * Implement proper input validation and security checks
-
----
-
-## About Me
-
-**Malek Mohammed**  
-*Oracle APEX Engineer, PL/SQL Specialist, Database & Cloud Developer*
-
-LinkedIn: [Malek_Al_Edresi](https://linkedin.com/in/Malek_Al_Edresi  )  
-GitHub: [malek-al-edresi](https://github.com/malek-al-edresi  )  
-Email: malek.m.edresi@gmail.com
