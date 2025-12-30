@@ -1,6 +1,4 @@
----
-
-# Oracle APEX + UltraMsg WhatsApp API Integration
+## Oracle APEX + UltraMsg WhatsApp API Integration
 
 This project demonstrates how to integrate **UltraMsg WhatsApp API** with **Oracle APEX / Oracle Database (PL/SQL)** to send WhatsApp messages programmatically.
 It includes example SQL scripts, a stored procedure for sending WhatsApp messages, configuration steps, and sample usage.
