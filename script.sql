@@ -1,3 +1,74 @@
+-- 
+-- create or replace function to get API configuration based on service name
+--
+create or replace FUNCTION GET_API_CONFIG (
+    p_service_name IN VARCHAR2 DEFAULT NULL
+) RETURN MANAG_SYS_SEC_L_SETTING_API_SERVICES%ROWTYPE
+---------------------------------------------------------------------- 
+-- FUNCTION NAME     : GET_API_CONFIG  
+-- PURPOSE           : Retrieve API configuration dynamically based on service name
+-- PARAMETERS        :  
+--                     P_SERVICE_NAME (IN VARCHAR2) - Name of the service for which API configuration is required
+-- DESCRIPTION       : This function retrieves the API configuration for a specified service from the MANAG_SYS_SEC_L_SETTING_API_SERVICES table.
+-- RETURNS           : A row of type MANAG_SYS_SEC_L_SETTING_API_SERVICES%ROWTYPE containing the API configuration details for the specified service 
+-- ERROR HANDLING    : Logs any processing errors to ERROR_LOG_PKG_SYSTEM_ALL  
+--                     with source identification and user context  
+-- Author            : ENG.Malek Mohammed Al-edresi  
+-- Date              : 2025-12-23  
+-- Version           : 1.0  
+---------------------------------------------------------------------
+IS
+    l_config MANAG_SYS_SEC_L_SETTING_API_SERVICES%ROWTYPE; -- API Configuration
+    l_error_info        file_processing_error_type := file_processing_error_type(NULL, NULL, 'PROCESSING', NVL(v('APP_USER'), 'SYSTEM'));  -- Error handling
+BEGIN
+    SELECT *
+    INTO l_config
+    FROM MANAG_SYS_SEC_L_SETTING_API_SERVICES
+    WHERE SERVICE_NAME = p_service_name
+    AND ROWNUM = 1;
+
+    RETURN l_config;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        l_error_info.error_message := 'API configuration not found for service: ' || p_service_name;
+        l_error_info.error_source := 'GET_API_CONFIG - API Configuration Retrieval';
+        l_error_info.processing_status := 'ERROR';
+
+          -- Log the error  
+        BEGIN  
+            ERROR_LOG_PKG_SYSTEM_ALL.INSERT_FUNCTIONS_SEC_LOG (  
+                l_error_info.error_message,  
+                l_error_info.error_source,  
+                l_error_info.user_name  
+            );  
+        EXCEPTION  
+            WHEN OTHERS THEN  
+                NULL;  
+        END;  
+
+        RETURN NULL;
+
+    WHEN OTHERS THEN  
+        l_error_info.error_message := 'Error in file processing pipeline: ' || SQLERRM;  
+        l_error_info.error_source := 'GET_API_CONFIG - Main Process';  
+        l_error_info.processing_status := 'ERROR';  
+
+        -- Log the error  
+        BEGIN  
+            ERROR_LOG_PKG_SYSTEM_ALL.INSERT_FUNCTIONS_SEC_LOG (  
+                l_error_info.error_message,  
+                l_error_info.error_source,  
+                l_error_info.user_name  
+            );  
+        EXCEPTION  
+            WHEN OTHERS THEN  
+                NULL;  
+        END;  
+
+        RETURN NULL; 
+END;
+/
+-- create or replace procedure to send WhatsApp messages using UltraMsg API
 create or replace procedure send_whatsapp (
     p_to_phone_no     in varchar2,
     p_msg             in clob
